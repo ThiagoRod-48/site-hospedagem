@@ -25,7 +25,7 @@ const Login = () => {
         </form>
 
         <p>
-          Ainda não tem uma conta{" "}
+          Ainda não tem uma conta?{" "}
           <Link to="/Register" className="font-semibold underline">
             Registre-se aqui!
           </Link>
