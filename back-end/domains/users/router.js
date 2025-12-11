@@ -36,6 +36,27 @@ async function start() {
       res.status(500).json(error);
     }
   });
+
+  router.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+      const userDoc = await user.findOne({ email });
+
+      if (userDoc) {
+        const passwordCorrect = bcrypt.compareSync(password, userDoc.password);
+        const { name, _id } = userDoc;
+
+        passwordCorrect
+          ? res.json({ name, email, _id })
+          : res.status(400).json("Senha inválida!");
+      } else {
+        res.status(400).json("Usuário não encontrado!");
+      }
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  });
 }
 
 start();
