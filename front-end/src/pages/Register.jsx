@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 
@@ -10,21 +11,24 @@ const Register = ({ setUser }) => {
   const handleSubmain = async (e) => {
     e.preventDefault();
 
-    //if (email && password) {
-    //  try {
-    //    const { data: userDoc } = await axios.post("/users/login", {
-    //      email,
-    //      password,
-    //    });
+    if (email && password && name) {
+      try {
+        const { data: userDoc } = await axios.post("/users", {
+          name,
+          email,
+          password,
+        });
 
-    //    setUser(userDoc);
-    //    setRedirect(true);
-    //  } catch (error) {
-    //    alert(`Deu um erro logar: ${error.response.data.message}`);
-    //  }
-    //} else {
-    //  alert("Preencha todos os campos!");
-    //}
+        setUser(userDoc);
+        setRedirect(true);
+      } catch (error) {
+        alert(
+          `Deu erro ao cadastrar o usuário: ${error.response.data.message}`,
+        );
+      }
+    } else {
+      alert("Preencha todos os campos!");
+    }
   };
 
   if (redirect) return <Navigate to="/" />;
