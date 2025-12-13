@@ -27,13 +27,11 @@ async function start() {
     const { token } = req.cookies;
 
     if (token) {
-      try {
-        const userInfor = jwt.verify(token, JWT_SECRET_KEY);
+      jwt.verify(token, JWT_SECRET_KEY, {}, (error, userInfor) => {
+        if (error) throw error;
 
         res.json(userInfor);
-      } catch (error) {
-        res.status(500).json(error);
-      }
+      });
     } else {
       res.json(null);
     }
@@ -51,13 +49,15 @@ async function start() {
       });
 
       const { _id } = newUserDoc;
-
       const newUserObj = { name, email, _id };
 
-      const token = jwt.sign(newUserObj, JWT_SECRET_KEY);
+      jwt.sign(newUserObj, JWT_SECRET_KEY, {}, (error, token) => {
+        if (error) throw error;
 
-      res.cookie("token", token).json(newUserObj);
+        res.cookie("token", token).json(newUserObj);
+      });
     } catch (error) {
+      console.error("REGISTER ERROR:", error);
       res.status(500).json(error);
     }
   });
@@ -84,6 +84,10 @@ async function start() {
     } catch (error) {
       res.status(500).json(error);
     }
+  });
+
+  router.post("/logout", (req, res) => {
+    res.clearCookie("token").json("Usuário deslogado!");
   });
 }
 
