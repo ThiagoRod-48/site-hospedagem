@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useUserContext } from "../contexts/UserContext";
 
-const Accprofile = () => {
+const AccProfile = () => {
   const { user, setUser } = useUserContext();
   const [redirect, setRedirect] = useState(false);
 
@@ -39,4 +39,4 @@ const Accprofile = () => {
   );
 };
 
-export default Accprofile;
+export default AccProfile;

@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
-import AccProfile from "../components/Accprofile";
+import AccPlaces from "../components/AccPlaces";
+import AccProfile from "../components/AccProfile";
 
 const Account = () => {
   const { subpage } = useParams();
@@ -29,6 +30,7 @@ const Account = () => {
         </div>
 
         {subpage === "profile" && <AccProfile />}
+        {subpage === "places" && <AccPlaces />}
       </div>
     </section>
   );
