@@ -1,20 +1,66 @@
+import axios from "axios";
 import { useState } from "react";
+import { Navigate } from "react-router-dom";
+import { useUserContext } from "../contexts/UserContext";
 import Perks from "./Perks";
+import PhotoUploads from "./PhotoUploads";
 
 const NewPlaces = () => {
+  const { user } = useUserContext();
   const [title, setTitle] = useState("");
   const [city, setCity] = useState("");
-  const [photos, setPhotos] = useState("");
+  const [photos, setPhotos] = useState([]);
+  const [perks, setPerks] = useState([]);
   const [description, setDescription] = useState("");
   const [extras, setExtras] = useState("");
   const [price, setPrice] = useState("");
   const [checkin, setCheckin] = useState("");
   const [checkout, setCheckout] = useState("");
   const [guests, setGuests] = useState("");
+  const [redirect, setRedirect] = useState(false);
+  const [photolink, setPhotolink] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // photos.length > 0 &&
+    if (
+      title &&
+      city &&
+      description &&
+      price &&
+      checkin &&
+      checkout &&
+      guests
+    ) {
+      try {
+        const newPlaces = await axios.post("places", {
+          owner: user._id,
+          title,
+          city,
+          photos,
+          description,
+          extras,
+          perks,
+          price,
+          checkin,
+          checkout,
+          guests,
+        });
+
+        console.log(newPlaces);
+
+        setRedirect(true);
+      } catch (error) {
+        console.error(JSON.stringify(error));
+        alert("Deu erro ao criar um novo lugar");
+      }
+    } else {
+      alert("Preencha todos os campos");
+    }
   };
+
+  if (redirect) return <Navigate to="/account/places" />;
 
   return (
     <form onSubmit={handleSubmit} className="flex w-full flex-col gap-6 px-9">
@@ -46,47 +92,7 @@ const NewPlaces = () => {
         />
       </div>
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor="photo" className="ml-2 text-2xl font-bold">
-          Fotos
-        </label>
-
-        <div className="flex gap-2">
-          <input
-            type="text"
-            className="grow rounded-full border border-gray-300 px-4 py-2"
-            placeholder="Adione uma foto pelo link dela"
-            id="photo"
-            value={photos}
-            onChange={(e) => setPhotos(e.target.value)}
-          />
-          <button className="cursor-pointer rounded-full border border-gray-300 bg-gray-100 px-4 py-2 transition hover:bg-gray-200">
-            Enviar foto
-          </button>
-        </div>
-
-        <div className="mt-2 grid grid-cols-5 gap-4">
-          <label
-            htmlFor="file"
-            className="flex aspect-square cursor-pointer items-center justify-center gap-2 rounded-2xl border border-gray-300"
-          >
-            <input type="file" id="file" className="hidden" />
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="size-6"
-            >
-              <path
-                fillRule="evenodd"
-                d="M11.47 2.47a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1-1.06 1.06l-3.22-3.22V16.5a.75.75 0 0 1-1.5 0V4.81L8.03 8.03a.75.75 0 0 1-1.06-1.06l4.5-4.5ZM3 15.75a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Upload
-          </label>
-        </div>
-      </div>
+      <PhotoUploads {...{ photolink, setPhotolink, setPhotos, photos }} />
 
       <div className="flex flex-col gap-1">
         <label htmlFor="description" className="ml-2 text-2xl font-bold">
@@ -108,7 +114,7 @@ const NewPlaces = () => {
           Comodidades
         </label>
 
-        <Perks />
+        <Perks {...{ perks, setPerks }} />
       </div>
 
       <div className="flex flex-col gap-1">
@@ -130,7 +136,7 @@ const NewPlaces = () => {
         <h2 className="ml-2 text-2xl font-bold">Restrições e Preço</h2>
 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(225px,1fr))] gap-24">
-          <div classNamw="flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
             <label className="ml-2 text-xl font-bold" htmlFor="price">
               Preço
             </label>
@@ -144,7 +150,7 @@ const NewPlaces = () => {
             />
           </div>
 
-          <div classNamw="flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
             <label className="ml-2 text-xl font-bold" htmlFor="checkin">
               Checkin
             </label>
@@ -158,12 +164,12 @@ const NewPlaces = () => {
             />
           </div>
 
-          <div classNamw="flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
             <label className="ml-2 text-xl font-bold" htmlFor="checkout">
               Checkout
             </label>
             <input
-              type="number"
+              type="text"
               className="rounded-full border border-gray-300 px-4 py-2"
               placeholder="12:00"
               id="checkout"
@@ -172,7 +178,7 @@ const NewPlaces = () => {
             />
           </div>
 
-          <div classNamw="flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
             <label className="ml-2 text-xl font-bold" htmlFor="guests">
               N° de Covidados
             </label>

@@ -1,8 +1,4 @@
-import { useState } from "react";
-
-const Perks = () => {
-  const [perks, setPerks] = useState([]);
-
+const Perks = ({ perks, setPerks }) => {
   const handleClick = (target) => {
     const newPerks = target.checked
       ? [...perks, target.value]

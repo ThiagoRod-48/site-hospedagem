@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import "dotenv/config";
 import { Router } from "express";
-import jwt from "jsonwebtoken";
 import { connectDb } from "../../config/db.js";
+import { JWTSing, JWTVerify } from "../../utils/jwt.js";
 import user from "./model.js";
 
 const router = Router();
@@ -24,17 +24,9 @@ async function start() {
   });
 
   router.get("/profile", async (req, res) => {
-    const { token } = req.cookies;
+    const userInfor = await JWTVerify(req);
 
-    if (token) {
-      jwt.verify(token, JWT_SECRET_KEY, {}, (error, userInfor) => {
-        if (error) throw error;
-
-        res.json(userInfor);
-      });
-    } else {
-      res.json(null);
-    }
+    res.json(userInfor);
   });
 
   router.post("/", async (req, res) => {
@@ -51,11 +43,13 @@ async function start() {
       const { _id } = newUserDoc;
       const newUserObj = { name, email, _id };
 
-      jwt.sign(newUserObj, JWT_SECRET_KEY, {}, (error, token) => {
-        if (error) throw error;
+      try {
+        const token = await JWTSing(newUserObj);
 
         res.cookie("token", token).json(newUserObj);
-      });
+      } catch (error) {
+        res.status(500).json("Erro ao assinar com o JWT", error);
+      }
     } catch (error) {
       console.error("REGISTER ERROR:", error);
       res.status(500).json(error);
@@ -74,20 +68,14 @@ async function start() {
 
         if (passwordCorrect) {
           const newUserObj = { name, email, _id };
-          const token = jwt.sign(
-            newUserObj,
-            JWT_SECRET_KEY,
-            {},
-            (error, token) => {
-              if (error) {
-                console.erro(error);
-                res.status(500).json(error);
-                return;
-              }
+          try {
+            const token = await JWTSing(newUserObj);
 
-              res.cookie("token", token).json(newUserObj);
-            }
-          );
+            res.cookie("token", token).json(newUserObj);
+          } catch (error) {
+            console.error(error);
+            res.status(500).json("Erro ao assinar com o JWT");
+          }
         } else res.status(400).json("Senha inválida!");
       } else {
         res.status(400).json("Usuário não encontrado!");
