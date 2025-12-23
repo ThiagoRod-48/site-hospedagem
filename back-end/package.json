@@ -11,16 +11,19 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@supabase/supabase-js": "^2.89.0",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "fs": "^0.0.1-security",
     "image-downloader": "^4.3.0",
     "jsonwebtoken": "^9.0.3",
     "mime-types": "^3.0.2",
     "mogoose": "^0.0.1-security",
     "mongoose": "^9.0.0",
+    "multer": "^2.0.2",
     "url": "^0.11.4"
   }
 }

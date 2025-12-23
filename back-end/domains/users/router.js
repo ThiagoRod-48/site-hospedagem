@@ -24,9 +24,14 @@ async function start() {
   });
 
   router.get("/profile", async (req, res) => {
-    const userInfor = await JWTVerify(req);
+    try {
+      const userInfo = await JWTVerify(req);
 
-    res.json(userInfor);
+      res.json(userInfo);
+    } catch (error) {
+      console.error(error);
+      res.status(401).json(null);
+    }
   });
 
   router.post("/", async (req, res) => {

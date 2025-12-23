@@ -5,14 +5,35 @@ const PhotoUploads = ({ photolink, setPhotolink, setPhotos, photos }) => {
     e.preventDefault();
 
     if (photolink) {
-      const { data: filename } = await axios.post("/places/upload/link", {
+      const { data } = await axios.post("/places/upload/link", {
         link: photolink,
       });
 
-      setPhotos((prevValue) => [...prevValue, filename]);
+      setPhotos((prevValue) => [...prevValue, data]);
     } else {
       alert("Não existe nenhum link a ser enviado");
     }
+  };
+
+  const uploadPhoto = async (e) => {
+    const { files } = e.target;
+    const filesArray = [...files];
+
+    const formData = new FormData();
+
+    filesArray.forEach((file) => {
+      formData.append("files", file);
+    });
+
+    const { data } = await axios.post("/places/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    setPhotos((prev) => [...prev, ...data]);
+
+    //console.log(files);
   };
 
   return (
@@ -42,9 +63,9 @@ const PhotoUploads = ({ photolink, setPhotolink, setPhotos, photos }) => {
         {photos.map((photo) => (
           <img
             className="aspect-square rounded-2xl object-cover"
-            src={`${axios.defaults.baseURL}/tmp/${photo}`}
+            src={photo.url}
             alt="Imagens do lugar"
-            key={photo}
+            key={photo.id}
           />
         ))}
 
@@ -52,7 +73,13 @@ const PhotoUploads = ({ photolink, setPhotolink, setPhotos, photos }) => {
           htmlFor="file"
           className="flex aspect-square cursor-pointer items-center justify-center gap-2 rounded-2xl border border-gray-300"
         >
-          <input type="file" id="file" className="hidden" />
+          <input
+            type="file"
+            id="file"
+            className="hidden"
+            multiple
+            onChange={uploadPhoto}
+          />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
