@@ -16,6 +16,7 @@ const Perks = ({ perks, setPerks }) => {
           type="checkbox"
           id="wifi"
           value={"wifi"}
+          checked={perks.includes("wifi")}
           onChange={(e) => handleClick(e.target)}
         />
         <svg
@@ -43,6 +44,7 @@ const Perks = ({ perks, setPerks }) => {
           type="checkbox"
           id="parking"
           value={"parking"}
+          checked={perks.includes("parking")}
           onChange={(e) => handleClick(e.target)}
         />
         <svg
@@ -70,6 +72,7 @@ const Perks = ({ perks, setPerks }) => {
           type="checkbox"
           id="tv"
           value={"tv"}
+          checked={perks.includes("tv")}
           onChange={(e) => handleClick(e.target)}
         />
         <svg
@@ -97,6 +100,7 @@ const Perks = ({ perks, setPerks }) => {
           type="checkbox"
           id="radio"
           value={"radio"}
+          checked={perks.includes("radio")}
           onChange={(e) => handleClick(e.target)}
         />
         <svg
@@ -124,6 +128,7 @@ const Perks = ({ perks, setPerks }) => {
           type="checkbox"
           id="pets"
           value={"pets"}
+          checked={perks.includes("pets")}
           onChange={(e) => handleClick(e.target)}
         />
         <svg
@@ -151,6 +156,7 @@ const Perks = ({ perks, setPerks }) => {
           type="checkbox"
           id="securit"
           value={"securit"}
+          checked={perks.includes("securit")}
           onChange={(e) => handleClick(e.target)}
         />
         <svg

@@ -1,11 +1,12 @@
 import axios from "axios";
-import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Navigate, useParams } from "react-router-dom";
 import { useUserContext } from "../contexts/UserContext";
 import Perks from "./Perks";
 import PhotoUploads from "./PhotoUploads";
 
 const NewPlaces = () => {
+  const { id } = useParams();
   const { user } = useUserContext();
   const [title, setTitle] = useState("");
   const [city, setCity] = useState("");
@@ -20,13 +21,40 @@ const NewPlaces = () => {
   const [redirect, setRedirect] = useState(false);
   const [photolink, setPhotolink] = useState("");
 
+  useEffect(() => {
+    if (id) {
+      const axioGet = async () => {
+        const { data } = await axios.get(`/places/${id}`);
+
+        console.log(data);
+
+        setTitle(data.title);
+        setCity(data.city);
+        setPhotos(
+          data.photos.map((photo) => ({
+            url: photo,
+          })),
+        );
+        setPerks(data.perks);
+        setDescription(data.description);
+        setExtras(data.extras);
+        setPrice(data.price);
+        setCheckin(data.checkin);
+        setCheckout(data.checkout);
+        setGuests(data.guests);
+      };
+
+      axioGet();
+    }
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // photos.length > 0 &&
     if (
       title &&
       city &&
+      photos.length > 0 &&
       description &&
       price &&
       checkin &&
@@ -34,21 +62,40 @@ const NewPlaces = () => {
       guests
     ) {
       try {
-        const newPlaces = await axios.post("places", {
-          owner: user._id,
-          title,
-          city,
-          photos,
-          description,
-          extras,
-          perks,
-          price,
-          checkin,
-          checkout,
-          guests,
-        });
+        if (id) {
+          const formattedPhotos = photos.map((photo) => photo.url);
+          const modifielPlace = await axios.put(`/places/${id}`, {
+            title,
+            city,
+            photos: formattedPhotos,
+            description,
+            extras,
+            perks,
+            price: Number(price),
+            checkin,
+            checkout,
+            guests: Number(guests),
+          });
 
-        console.log(newPlaces);
+          console.log(modifielPlace);
+        } else {
+          const formattedPhotos = photos.map((photo) => photo.url);
+          const newPlaces = await axios.post("/places", {
+            owner: user._id,
+            title,
+            city,
+            photos: formattedPhotos,
+            description,
+            extras,
+            perks,
+            price: Number(price),
+            checkin,
+            checkout,
+            guests: Number(guests),
+          });
+
+          console.log(newPlaces);
+        }
 
         setRedirect(true);
       } catch (error) {

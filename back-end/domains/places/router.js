@@ -8,6 +8,88 @@ const router = Router();
 async function start() {
   await connectDb();
 
+  router.get("/", async (req, res) => {
+    try {
+      const placeDocs = await place.find();
+
+      res.json(placeDocs);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json("Deu erro ao encontrar as comodações");
+    }
+  });
+
+  router.get("/owner", async (req, res) => {
+    try {
+      const userInfor = await JWTVerify(req);
+
+      try {
+        const placeDocs = await place.find({ owner: userInfor._id });
+
+        res.json(placeDocs);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json("Deu erro ao encontrar as comodações");
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json("Deu erro ao verificar o usuário");
+    }
+  });
+
+  router.get("/:id", async (req, res) => {
+    const { id: _id } = req.params;
+
+    try {
+      const placeDoc = await place.findOne({ _id });
+
+      res.json(placeDoc);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json("Deu erro ao encontrar a comodação");
+    }
+  });
+
+  router.put("/:id", async (req, res) => {
+    const { id: _id } = req.params;
+
+    const {
+      title,
+      city,
+      photos,
+      description,
+      extras,
+      perks,
+      price,
+      checkin,
+      checkout,
+      guests,
+    } = req.body;
+
+    try {
+      const updatePlaceDoc = await place.findOneAndUpdate(
+        { _id },
+        {
+          title,
+          city,
+          photos,
+          description,
+          extras,
+          perks,
+          price,
+          checkin,
+          checkout,
+          guests,
+        }
+      );
+
+      res.json(updatePlaceDoc);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json("Deu erro ao atualizar a comodação");
+    }
+  });
+
   router.post("/", async (req, res) => {
     const {
       title,
@@ -15,8 +97,8 @@ async function start() {
       photos,
       description,
       extras,
-      price,
       perks,
+      price,
       checkin,
       checkout,
       guests,
