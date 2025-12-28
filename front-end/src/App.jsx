@@ -5,6 +5,7 @@ import { UserContextProvider } from "./contexts/UserContext";
 import Account from "./pages/Account";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Place from "./pages/Place";
 import Register from "./pages/Register";
 
 axios.defaults.baseURL = import.meta.env.VITE_AXIOS_BASE_URL;
@@ -21,6 +22,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/account/:subpage/:action?/:id?" element={<Account />} />
+          <Route path="/place/:id" element={<Place />} />
         </Routes>
       </BrowserRouter>
     </UserContextProvider>
