@@ -1,7 +1,7 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
-import { dirname } from "node:path";
+import path, { dirname } from "node:path";
 import { fileURLToPath } from "url";
 import routes from "./routes/index.js";
 
@@ -19,4 +19,9 @@ app.use(
   })
 );
 app.use("/tmp", express.static(__dirname + "/tmp"));
-app.use(routes);
+app.use(express.static(path.join(__dirname, "../front-end/dist")));
+app.use("/api", routes);
+
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, "../front-end/dist/index.html"));
+});
