@@ -8,10 +8,7 @@ import Login from "./pages/Login";
 import Place from "./pages/Place";
 import Register from "./pages/Register";
 
-axios.defaults.baseURL =
-  import.meta.env.MODE === "development"
-    ? "http://localhost:4000/api"
-    : "https://soarbnb.onrender.com/api";
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 axios.defaults.withCredentials = true;
 
 function App() {
