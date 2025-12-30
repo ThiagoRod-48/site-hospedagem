@@ -11,7 +11,7 @@ import Register from "./pages/Register";
 axios.defaults.baseURL =
   import.meta.env.MODE === "development"
     ? "http://localhost:4000/api"
-    : "http://localhost:4000/api";
+    : "https://soarbnb.onrender.com/api";
 axios.defaults.withCredentials = true;
 
 function App() {
