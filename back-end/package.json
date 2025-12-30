@@ -24,7 +24,6 @@
     "mime-types": "^3.0.2",
     "mongoose": "^9.0.0",
     "multer": "^2.0.2",
-    "site-de-hospedagem-de-curta-duracao": "file:..",
     "url": "^0.11.4"
   }
 }
