@@ -1,0 +1,20 @@
+{
+  "name": "site-de-hospedagem-de-curta-duracao",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThiagoRod-48/site-hospedagem.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ThiagoRod-48/site-hospedagem/issues"
+  },
+  "homepage": "https://github.com/ThiagoRod-48/site-hospedagem#readme",
+  "description": ""
+}
