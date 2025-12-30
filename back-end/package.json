@@ -22,7 +22,6 @@
     "image-downloader": "^4.3.0",
     "jsonwebtoken": "^9.0.3",
     "mime-types": "^3.0.2",
-    "mogoose": "^0.0.1-security",
     "mongoose": "^9.0.0",
     "multer": "^2.0.2",
     "site-de-hospedagem-de-curta-duracao": "file:..",
