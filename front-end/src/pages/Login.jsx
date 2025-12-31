@@ -14,10 +14,11 @@ const Login = () => {
 
     if (email && password) {
       try {
-        const { data: userDoc } = await axios.post("/users/login", {
-          email,
-          password,
-        });
+        const { data: userDoc } = await axios.post(
+          "/api/users/login",
+          { email, password },
+          { withCredentials: true },
+        );
 
         setUser(userDoc);
         setRedirect(true);
