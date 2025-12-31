@@ -58,7 +58,7 @@ async function start() {
       try {
         const token = await JWTSing(newUserObj);
 
-        res.cookie("token", token).json(newUserObj);
+        res.cookie("token", token, cookieOptions).json(newUserObj);
       } catch (error) {
         res.status(500).json("Erro ao assinar com o JWT", error);
       }
