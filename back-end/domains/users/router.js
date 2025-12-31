@@ -7,7 +7,15 @@ import user from "./model.js";
 
 const router = Router();
 const bcryptSalt = bcrypt.genSaltSync();
-const { JWT_SECRET_KEY } = process.env;
+const { JWT_SECRET_KEY, NODE_ENV } = process.env;
+
+const isProduction = NODE_ENV === "production";
+
+const cookieOptions = {
+  httpOnly: true,
+  sameSite: isProduction ? "none" : "lax",
+  secure: isProduction,
+};
 
 async function start() {
   await connectDb();
@@ -76,7 +84,7 @@ async function start() {
           try {
             const token = await JWTSing(newUserObj);
 
-            res.cookie("token", token).json(newUserObj);
+            res.cookie("token", token, cookieOptions).json(newUserObj);
           } catch (error) {
             console.error(error);
             res.status(500).json("Erro ao assinar com o JWT");
@@ -91,7 +99,7 @@ async function start() {
   });
 
   router.post("/logout", (req, res) => {
-    res.clearCookie("token").json("Usuário deslogado!");
+    res.clearCookie("token", cookieOptions).json("Usuário deslogado!");
   });
 }
 

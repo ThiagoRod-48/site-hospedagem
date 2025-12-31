@@ -27,19 +27,29 @@ const Place = () => {
   };
 
   useEffect(() => {
-    if (place) {
-      const axioGet = async () => {
-        const { data } = await axios.get("/bookings/owner");
-        setBooking(
-          data.filter((booking) => {
-            console.log(booking.place._id, place._id);
-            return booking.place._id === place._id;
-          })[0],
-        );
-      };
+    if (!place) return;
 
-      axioGet();
-    }
+    const axiosGet = async () => {
+      try {
+        const { data } = await axios.get("/bookings/owner", {
+          withCredentials: true,
+        });
+
+        const bookingFound = data.find(
+          (booking) => booking.place?._id === place._id,
+        );
+
+        setBooking(bookingFound || null);
+      } catch (error) {
+        if (error.response?.status === 401) {
+          console.log("Usuário não autenticado");
+        } else {
+          console.error("Erro ao buscar reservas:", error);
+        }
+      }
+    };
+
+    axiosGet();
   }, [place]);
 
   useEffect(() => {
