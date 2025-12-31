@@ -32,14 +32,13 @@ async function start() {
   });
 
   router.get("/profile", async (req, res) => {
-    try {
-      const userInfo = await JWTVerify(req);
+    const userInfo = await JWTVerify(req);
 
-      res.json(userInfo);
-    } catch (error) {
-      console.error(error);
-      res.status(401).json(null);
+    if (!userInfo) {
+      return res.status(401).json(null);
     }
+
+    res.json(userInfo);
   });
 
   router.post("/", async (req, res) => {

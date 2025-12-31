@@ -4,18 +4,13 @@ import jwt from "jsonwebtoken";
 const { JWT_SECRET_KEY } = process.env;
 
 export const JWTVerify = (req) => {
-  const { token } = req.cookies;
+  const token = req.cookies?.token;
 
-  if (!token) {
-    throw new Error("Token não encontrado");
-  }
+  if (!token) return null;
 
   return new Promise((resolve, reject) => {
     jwt.verify(token, JWT_SECRET_KEY, (error, userInfo) => {
-      if (error) {
-        return reject(error);
-      }
-
+      if (error) return reject(error);
       resolve(userInfo);
     });
   });
