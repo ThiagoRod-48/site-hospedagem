@@ -9,18 +9,17 @@ async function start() {
   await connectDb();
 
   router.get("/owner", async (req, res) => {
-    try {
-      const userData = await JWTVerify(req);
+    const userData = await JWTVerify(req);
 
-      const { _id: id } = userData;
-
-      const bookingDoc = await Booking.find({ user: id }).populate("place");
-
-      res.json(bookingDoc);
-    } catch (error) {
-      console.error(error);
-      res.status(401).json("Usuário não autenticado ou token inválido");
+    if (!userData) {
+      return res.status(401).json("Usuário não autenticado");
     }
+
+    const bookingDoc = await Booking.find({ user: userData._id }).populate(
+      "place"
+    );
+
+    res.json(bookingDoc);
   });
 
   router.post("/", async (req, res) => {

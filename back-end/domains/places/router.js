@@ -20,21 +20,14 @@ async function start() {
   });
 
   router.get("/owner", async (req, res) => {
-    try {
-      const userInfor = await JWTVerify(req);
+    const userInfor = await JWTVerify(req);
 
-      try {
-        const placeDocs = await place.find({ owner: userInfor._id });
-
-        res.json(placeDocs);
-      } catch (error) {
-        console.error(error);
-        res.status(500).json("Deu erro ao encontrar as comodações");
-      }
-    } catch (error) {
-      console.error(error);
-      res.status(500).json("Deu erro ao verificar o usuário");
+    if (!userInfor) {
+      return res.status(401).json("Usuário não autenticado");
     }
+
+    const placeDocs = await place.find({ owner: userInfor._id });
+    res.json(placeDocs);
   });
 
   router.get("/:id", async (req, res) => {
@@ -105,7 +98,13 @@ async function start() {
     } = req.body;
 
     try {
-      const { _id: owner } = await JWTVerify(req);
+      const userData = await JWTVerify(req);
+
+      if (!userData) {
+        return res.status(401).json("Usuário não autenticado");
+      }
+
+      const { _id: owner } = userData;
 
       const newPlaceDoc = await place.create({
         owner,
