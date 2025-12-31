@@ -10,19 +10,16 @@ async function start() {
 
   router.get("/owner", async (req, res) => {
     try {
-      const { _id: id } = await JWTVerify(req);
+      const userData = await JWTVerify(req);
 
-      try {
-        const bookingDoc = await Booking.find({ user: id }).populate("place");
+      const { _id: id } = userData;
 
-        res.json(bookingDoc);
-      } catch (error) {
-        console.error(error);
-        res.status(500).json("Deu erro ao buscar as reservas daquele usuário");
-      }
+      const bookingDoc = await Booking.find({ user: id }).populate("place");
+
+      res.json(bookingDoc);
     } catch (error) {
       console.error(error);
-      res.status(500).json("Deu erro ao validar o token do usuário");
+      res.status(401).json("Usuário não autenticado ou token inválido");
     }
   });
 

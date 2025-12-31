@@ -2,22 +2,23 @@ import "dotenv/config";
 import jwt from "jsonwebtoken";
 
 const { JWT_SECRET_KEY } = process.env;
+
 export const JWTVerify = (req) => {
   const { token } = req.cookies;
-  if (token) {
-    return new Promise((resolve, reject) => {
-      jwt.verify(token, JWT_SECRET_KEY, {}, (error, userInfor) => {
-        if (error) {
-          console.error("Deu algun erro ao verificar o JWT:", error);
-          reject(error);
-        }
 
-        resolve(userInfor);
-      });
-    });
-  } else {
-    return null;
+  if (!token) {
+    throw new Error("Token não encontrado");
   }
+
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, JWT_SECRET_KEY, (error, userInfo) => {
+      if (error) {
+        return reject(error);
+      }
+
+      resolve(userInfo);
+    });
+  });
 };
 
 export const JWTSing = (newUserObj) => {
