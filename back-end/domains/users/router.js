@@ -7,14 +7,12 @@ import user from "./model.js";
 
 const router = Router();
 const bcryptSalt = bcrypt.genSaltSync();
-const { JWT_SECRET_KEY, NODE_ENV } = process.env;
-
-const isProduction = NODE_ENV === "production";
+const { JWT_SECRET_KEY } = process.env;
 
 const cookieOptions = {
   httpOnly: true,
-  sameSite: isProduction ? "none" : "lax",
-  secure: isProduction,
+  sameSite: "none",
+  secure: true,
 };
 
 async function start() {
