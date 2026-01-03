@@ -1,10 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import "dotenv/config";
-import fs from "fs/promises";
-import download from "image-downloader";
 import mime from "mime-types";
 import multer from "multer";
-import { __dirname } from "../../server.js";
 
 const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_BUCKET } =
   process.env;
@@ -25,25 +22,23 @@ const client = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 export const uploadSupabase = async ({ link, file }) => {
   let filename;
-  let fullPath;
+  let fileBuffer;
   let contentType;
 
   if (link) {
     const { extension, mimeType } = getExtension(link);
     filename = `${Date.now()}.${extension}`;
-    fullPath = `${__dirname}/tmp/${filename}`;
     contentType = mimeType;
 
-    await download.image({ url: link, dest: fullPath });
+    const response = await fetch(link);
+    fileBuffer = Buffer.from(await response.arrayBuffer());
   } else if (file) {
-    filename = file.filename;
-    fullPath = file.path;
+    filename = `${Date.now()}.${mime.extension(file.mimetype)}`;
+    fileBuffer = file.buffer;
     contentType = file.mimetype;
   } else {
     throw new Error("Nenhum arquivo ou link informado");
   }
-
-  const fileBuffer = await fs.readFile(fullPath);
 
   const { error } = await client.storage
     .from(SUPABASE_BUCKET)
@@ -62,43 +57,8 @@ export const uploadSupabase = async ({ link, file }) => {
   };
 };
 
-// export const downloadImage = async (link) => {
-//   if (!link) {
-//     throw new Error("URL da imagem não foi informada");
-//   }
-
-//   const extension = getExtension(link);
-//   const destination = `${__dirname}/tmp/`;
-
-//   const filename = `${Date.now()}.${extension}`;
-//   const fullPath = `${destination}${filename}`;
-
-//   try {
-//     const options = {
-//       url: link,
-//       dest: fullPath,
-//     };
-
-//     await download.image(options);
-
-//     return { filename, fullPath, mimeType };
-//     // console.log("Saved to", filename);
-//   } catch (error) {
-//     console.error("Erro ao baixar imagem:", error);
-//     throw error;
-//   }
-// };
-
 export const uploadImage = () => {
-  const storage = multer.diskStorage({
-    destination(req, file, cb) {
-      cb(null, `${__dirname}/tmp/`);
-    },
-    filename: function (req, file, cb) {
-      const extension = mime.extension(file.mimetype);
-
-      cb(null, `${Date.now()}.${extension}`);
-    },
+  return multer({
+    storage: multer.memoryStorage(),
   });
-  return multer({ storage });
 };
