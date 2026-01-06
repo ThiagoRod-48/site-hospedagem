@@ -8,6 +8,7 @@ const Home = () => {
   useEffect(() => {
     const axioGet = async () => {
       const { data } = await axios.get("/places");
+
       setPlaces(data);
     };
 
@@ -16,13 +17,8 @@ const Home = () => {
   return (
     <section>
       <div className="mx-auto grid max-w-7xl grid-cols-[repeat(auto-fit,minmax(225px,1fr))] gap-8 p-8">
-        {places.map((place) => (
-          <Itens {...{ place }} key={place._id} />
-        ))}
-
-        {places.map((place) => (
-          <Itens {...{ place }} key={place._id} />
-        ))}
+        {Array.isArray(places) &&
+          places.map((place) => <Itens place={place} key={place._id} />)}
       </div>
     </section>
   );
