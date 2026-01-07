@@ -57,9 +57,9 @@ npm install
 npm run dev
 
 ### Back-end
+
 ```bash
 cd back-end
 npm install
 npm run dev
-
 ````
